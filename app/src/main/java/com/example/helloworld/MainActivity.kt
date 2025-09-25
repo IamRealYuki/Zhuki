@@ -1,6 +1,9 @@
 package com.example.helloworld
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,30 +15,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.helloworld.activity.RegistrationActivity
 import com.example.helloworld.ui.theme.HelloWorldTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             HelloWorldTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                    Button({ onClickButton(Modifier.padding(innerPadding)) }) {
-
-                    }
-                }
+                // Пустой экран, так как сразу переходим
             }
         }
-    }
-}
 
-fun onClickButton(modifier: Modifier = Modifier) {
-    print("Llalalallala");
+        Handler(Looper.getMainLooper()).postDelayed({
+            val intent = Intent(this, RegistrationActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 0) // 0 миллисекунд
+    }
 }
 
 @Composable

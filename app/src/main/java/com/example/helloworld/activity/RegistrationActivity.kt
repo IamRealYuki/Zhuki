@@ -9,6 +9,7 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import com.example.helloworld.R
 import com.example.helloworld.model.Player
 
@@ -21,6 +22,7 @@ class RegistrationActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_registration)
 
         initViews()
@@ -32,6 +34,8 @@ class RegistrationActivity : ComponentActivity() {
         etFullName = findViewById(R.id.etFullName)
         rgGender = findViewById(R.id.rgGender)
         spCourse = findViewById(R.id.spCourse)
+        btnSubmit = findViewById(R.id.btnSubmit)
+        tvResult = findViewById(R.id.tvResult)
     }
 
     private fun setupCourseSpinner() {
