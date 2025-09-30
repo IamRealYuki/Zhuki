@@ -1,17 +1,19 @@
-package com.example.helloworld.activity
+package com.example.helloworld.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
+import androidx.fragment.app.Fragment
 import com.example.helloworld.R
 import com.example.helloworld.model.Player
 import com.example.helloworld.model.ZodiacPeriod
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RegistrationActivity : ComponentActivity() {
+class RegistrationFragment : Fragment() {
     private lateinit var etFullName: EditText
     private lateinit var rgGender: RadioGroup
     private lateinit var spCourse: Spinner
@@ -38,39 +40,43 @@ class RegistrationActivity : ComponentActivity() {
         ZodiacPeriod("Рыбы", Calendar.FEBRUARY, 19, Calendar.MARCH, 20, R.drawable.ryby)
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_registration)
-
-        initViews()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_registration, container, false)
+        initViews(view)
         setupCourseSpinner()
         setupListeners()
-
         updateZodiacSign()
+        return view
     }
 
-    private fun initViews() {
-        etFullName = findViewById(R.id.etFullName)
-        rgGender = findViewById(R.id.rgGender)
-        spCourse = findViewById(R.id.spCourse)
-        sbDifficulty = findViewById(R.id.sbDifficulty)
-        tvDifficultyValue = findViewById(R.id.tvDifficultyValue)
-        tvDifficultyValue.text = "Младенец"
-        cvBirthDate = findViewById(R.id.cvBirthDate)
-        ivZodiac = findViewById(R.id.ivZodiac)
-        btnSubmit = findViewById(R.id.btnSubmit)
-        tvResult = findViewById(R.id.tvResult)
+    private fun initViews(view: View) {
+        etFullName = view.findViewById(R.id.etFullName)
+        rgGender = view.findViewById(R.id.rgGender)
+        spCourse = view.findViewById(R.id.spCourse)
+        sbDifficulty = view.findViewById(R.id.sbDifficulty)
+        tvDifficultyValue = view.findViewById(R.id.tvDifficultyValue)
+        cvBirthDate = view.findViewById(R.id.cvBirthDate)
+        ivZodiac = view.findViewById(R.id.ivZodiac)
+        btnSubmit = view.findViewById(R.id.btnSubmit)
+        tvResult = view.findViewById(R.id.tvResult)
     }
 
     private fun setupCourseSpinner() {
         val courses = listOf("1 курс", "2 курс", "3 курс", "4 курс")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, courses)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, courses)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spCourse.adapter = adapter
     }
 
     private fun setupListeners() {
+        if (!::btnSubmit.isInitialized) {
+            btnSubmit = requireView().findViewById(R.id.btnSubmit)
+        }
+
         sbDifficulty.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val levels = listOf("Младенец", "Ребенок", "Пацан с района", "Милешко", "Солодов")
@@ -144,7 +150,7 @@ class RegistrationActivity : ComponentActivity() {
         )
 
         if (player.fullName.isEmpty()) {
-            Toast.makeText(this, "Введите ФИО", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Введите ФИО", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -158,7 +164,7 @@ class RegistrationActivity : ComponentActivity() {
         """.trimIndent()
 
         tvResult.post {
-            val scrollView = findViewById<ScrollView>(R.id.mainScroll)
+            val scrollView = requireView().findViewById<ScrollView>(R.id.mainScroll)
             scrollView?.smoothScrollTo(0, tvResult.bottom)
         }
     }

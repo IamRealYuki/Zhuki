@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.HelloWorld" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+    </style>
 
-    <style name="Theme.HelloWorld" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.HelloWorld" parent="Base.Theme.HelloWorld">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- Добавьте AppCompat тему для MainActivity -->
+    <style name="Theme.HelloWorld.AppCompat" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
+    </style>
 </resources>

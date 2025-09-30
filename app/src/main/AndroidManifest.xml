@@ -23,11 +23,5 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.RegistrationActivity"
-            android:label="Регистрация игрока"
-            android:exported="true">
-        </activity>
-
     </application>
 </manifest>
