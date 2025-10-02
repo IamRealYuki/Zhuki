@@ -9,13 +9,49 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- ВЫБОР ТЕМЫ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Тема приложения"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
+
+            <RadioButton
+                android:id="@+id/rbThemeDefault"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Базовая тема" />
+
+            <RadioButton
+                android:id="@+id/rbThemeOcean"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ocean тема" />
+
+            <RadioButton
+                android:id="@+id/rbThemeSunset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sunset тема" />
+
+        </RadioGroup>
+
         <!-- Скорость игры -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Скорость игры"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="24dp" />
 
         <SeekBar
             android:id="@+id/sbGameSpeed"

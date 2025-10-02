@@ -9,10 +9,34 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- Добавьте AppCompat тему для MainActivity -->
     <style name="Theme.HelloWorld.AppCompat" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryDark">@color/purple_700</item>
         <item name="colorAccent">@color/teal_200</item>
+    </style>
+
+    <!-- Основная тема приложения (базовая) -->
+    <style name="Theme.MyApp" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
+        <!-- Кастомные атрибуты -->
+        <item name="myPrimaryColor">@color/purple_500</item>
+        <item name="myBackgroundColor">@color/white</item>
+        <item name="myTextColor">@color/black</item>
+    </style>
+
+    <!-- Ocean Theme - наследуется от основной -->
+    <style name="Theme.MyApp.Ocean" parent="Theme.MyApp">
+        <item name="myPrimaryColor">@color/ocean_primary</item>
+        <item name="myBackgroundColor">@color/ocean_background</item>
+        <item name="myTextColor">#000000</item>
+    </style>
+
+    <!-- Sunset Theme - наследуется от основной -->
+    <style name="Theme.MyApp.Sunset" parent="Theme.MyApp">
+        <item name="myPrimaryColor">@color/sunset_primary</item>
+        <item name="myBackgroundColor">@color/sunset_background</item>
+        <item name="myTextColor">#000000</item>
     </style>
 </resources>
