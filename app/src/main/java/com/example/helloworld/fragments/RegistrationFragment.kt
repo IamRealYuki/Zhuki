@@ -17,8 +17,6 @@ class RegistrationFragment : Fragment() {
     private lateinit var etFullName: EditText
     private lateinit var rgGender: RadioGroup
     private lateinit var spCourse: Spinner
-    private lateinit var sbDifficulty: SeekBar
-    private lateinit var tvDifficultyValue: TextView
     private lateinit var cvBirthDate: CalendarView
     private lateinit var ivZodiac: ImageView
     private lateinit var btnSubmit: Button
@@ -57,8 +55,6 @@ class RegistrationFragment : Fragment() {
         etFullName = view.findViewById(R.id.etFullName)
         rgGender = view.findViewById(R.id.rgGender)
         spCourse = view.findViewById(R.id.spCourse)
-        sbDifficulty = view.findViewById(R.id.sbDifficulty)
-        tvDifficultyValue = view.findViewById(R.id.tvDifficultyValue)
         cvBirthDate = view.findViewById(R.id.cvBirthDate)
         ivZodiac = view.findViewById(R.id.ivZodiac)
         btnSubmit = view.findViewById(R.id.btnSubmit)
@@ -76,15 +72,6 @@ class RegistrationFragment : Fragment() {
         if (!::btnSubmit.isInitialized) {
             btnSubmit = requireView().findViewById(R.id.btnSubmit)
         }
-
-        sbDifficulty.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val levels = listOf("Младенец", "Ребенок", "Пацан с района", "Милешко", "Солодов")
-                tvDifficultyValue.text = levels[progress]
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
 
         cvBirthDate.setOnDateChangeListener { _, year, month, dayOfMonth ->
             selectedDate.set(year, month, dayOfMonth)
@@ -134,8 +121,6 @@ class RegistrationFragment : Fragment() {
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val birthDateString = dateFormat.format(selectedDate.time)
 
-        val difficultyLevel = sbDifficulty.progress
-
         val player = Player(
             fullName = etFullName.text.toString().trim(),
             gender = when (rgGender.checkedRadioButtonId) {
@@ -144,7 +129,6 @@ class RegistrationFragment : Fragment() {
                 else -> "Не указан"
             },
             course = spCourse.selectedItem?.toString() ?: "Не выбран",
-            difficulty = difficultyLevel,
             birthDate = birthDateString,
             zodiacSign = zodiacInfo?.name ?: "Рыбы"
         )
@@ -158,7 +142,6 @@ class RegistrationFragment : Fragment() {
             ФИО: ${player.fullName}
             Пол: ${player.gender}
             Курс: ${player.course}
-            Уровень сложности: ${tvDifficultyValue.text} [${player.difficulty + 1}/5]
             Дата рождения: ${player.birthDate}
             Знак зодиака: ${player.zodiacSign}
         """.trimIndent()

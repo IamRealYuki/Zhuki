@@ -132,6 +132,18 @@
             android:layout_height="wrap_content"
             android:text="60 сек" />
 
+        <SeekBar
+            android:id="@+id/sbDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="4"
+            android:progress="0" />
+        <TextView
+            android:id="@+id/tvDifficultyValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5" />
+
         <!-- Кнопка сохранения -->
         <Button
             android:id="@+id/btnSaveSettings"

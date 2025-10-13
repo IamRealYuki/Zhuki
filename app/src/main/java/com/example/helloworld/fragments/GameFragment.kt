@@ -1,6 +1,7 @@
 package com.example.helloworld.fragments
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,6 +12,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.helloworld.R
 import com.example.helloworld.model.*
+import com.example.helloworld.model.enemy.*
 import kotlin.random.Random
 
 class GameFragment : Fragment() {
@@ -31,11 +33,12 @@ class GameFragment : Fragment() {
 
     private val activeBugs = mutableListOf<Pair<ImageView, Bug>>()
 
-    // Настройки
-    private var spawnInterval = 1200L // Интервал спавна (мс)
-    private var maxBugs = 5           // Максимум жуков на экране
+    private var spawnInterval = 1200L
+    private var maxBugs = 5
     private var bugSpeedMultiplier = 1.0
-    private var roundDuration = 30000L // Время раунда (мс)
+    private var roundDuration = 30000L
+    private var difficulty = 1
+    private var lastSpawnTime = System.currentTimeMillis()
 
     private var timer: CountDownTimer? = null
 
@@ -87,12 +90,13 @@ class GameFragment : Fragment() {
         val maxCockroaches = prefs.getInt("max_cockroaches", 5)
         val bonusInterval = prefs.getInt("bonus_interval", 2)
         val roundDurationSec = prefs.getInt("round_duration", 30)
+        val gameDifficulty = prefs.getInt("game_difficulty", 1)
 
-        // Конвертируем в реальные значения
-        bugSpeedMultiplier = 0.5 + (speedProgress / 5.0) // 0.5x - 3.5x
+        bugSpeedMultiplier = (0.5 + (speedProgress / 5.0)) * 2
         maxBugs = maxCockroaches.coerceAtLeast(1)
         spawnInterval = (2000L / bonusInterval.coerceAtLeast(1))
         roundDuration = roundDurationSec * 1000L
+        difficulty = gameDifficulty
     }
 
     private fun startGame() {
@@ -138,33 +142,45 @@ class GameFragment : Fragment() {
             }
 
             moveBugs()
-            handler.postDelayed(this, spawnInterval)
+            if (System.currentTimeMillis() - lastSpawnTime >= spawnInterval) {
+                if (activeBugs.size < maxBugs) {
+                    spawnBug()
+                }
+                lastSpawnTime = System.currentTimeMillis()
+            }
+            handler.postDelayed(this, 1000/60)
         }
     }
 
     private fun spawnBug() {
         val bug = getRandomBug()
-        val bugView = ImageView(requireContext())
+        val imageView = ImageView(requireContext())
 
-        val resId = resources.getIdentifier(bug.sprite, "drawable", requireContext().packageName)
-        bugView.setImageResource(resId)
+        try {
+            val ims = requireContext().assets.open("sprites/bugs/${bug.sprite}")
+            val bitmap = BitmapFactory.decodeStream(ims)
+            ims.close()
+            imageView.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return
+        }
+        val displayMetrics = resources.displayMetrics
+        val sizePx = (bug.size * displayMetrics.density*25).toInt()
+        val params = FrameLayout.LayoutParams(sizePx, sizePx)
+        params.leftMargin = Random.nextInt(0, gameLayout.width - sizePx)
+        params.topMargin = Random.nextInt(0, gameLayout.height - sizePx)
+        imageView.layoutParams = params
 
-        val params = FrameLayout.LayoutParams(bug.size, bug.size)
-        params.leftMargin = Random.nextInt(0, screenWidth - bug.size)
-        params.topMargin = Random.nextInt(0, screenHeight - bug.size * 3)
-        bugView.layoutParams = params
-
-        bugView.setOnClickListener {
-            if (isPlaying) {
-                score += bug.points
-                tvScore.text = "Очки: $score"
-                gameLayout.removeView(bugView)
-                activeBugs.removeAll { it.first == bugView }
-            }
+        imageView.setOnClickListener {
+            score += bug.points
+            tvScore.text = "Очки: $score"
+            gameLayout.removeView(imageView)
+            activeBugs.removeAll { it.first == imageView }
         }
 
-        gameLayout.addView(bugView)
-        activeBugs.add(bugView to bug)
+        gameLayout.addView(imageView)
+        activeBugs.add(imageView to bug)
     }
 
     private fun moveBugs() {
@@ -172,22 +188,40 @@ class GameFragment : Fragment() {
         while (iterator.hasNext()) {
             val (bugView, bug) = iterator.next()
             val params = bugView.layoutParams as FrameLayout.LayoutParams
-            params.topMargin += (bug.speed * bugSpeedMultiplier).toInt()
+
+            val (newX, newY) = bug.calculateNewPosition(
+                currentX = params.leftMargin,
+                currentY = params.topMargin,
+                screenWidth = screenWidth,
+                screenHeight = screenHeight,
+                viewWidth = bugView.width,
+                viewHeight = bugView.height,
+                speedMultiplier = bugSpeedMultiplier
+            )
+
+            params.leftMargin = newX
+            params.topMargin = newY
+            bugView.layoutParams = params
 
             if (params.topMargin > screenHeight) {
                 gameLayout.removeView(bugView)
                 iterator.remove()
-            } else {
-                bugView.layoutParams = params
             }
         }
     }
 
     private fun getRandomBug(): Bug {
-        return when (Random.nextInt(0, 3)) {
-            0 -> Cockroach()
-            1 -> Beetle()
-            else -> Ladybug()
+        if(difficulty < 4)
+        return when (Random.nextInt(0, 9)) {
+            in 0..2 -> Cockroach() // 30%
+            in 3..7 -> Grasshopper() // 50%
+            else -> Luntik()  // 20%
+        }
+        else return when (Random.nextInt(0, 15)) {
+            in 0..3 -> Cockroach() // 27%
+            in 4..8 -> Grasshopper() // 33%
+            in 9 .. 11 -> Luntik() // 20%
+            else -> Solodov()  // 20%
         }
     }
 }

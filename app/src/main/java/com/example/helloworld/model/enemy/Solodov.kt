@@ -1,7 +1,10 @@
 package com.example.helloworld.model.enemy
 
+import kotlin.math.sin
+import kotlin.random.Random
+
 class Solodov(
-    spritePath: String = "sprites/bugs/solodov.png",
+    spritePath: String = "Solodov.png",
     pointValue: Int = 2280,
     moveSpeed: Int = 1,
     bugSize: Int = 4
@@ -11,8 +14,22 @@ class Solodov(
     override var points: Int = pointValue
     override var speed: Int = moveSpeed
     override var size: Int = bugSize
+    private var waveOffset = Random.nextFloat() * 10f
 
-    init {
-        println("Создан жук по имени Солодов")
+    override fun calculateNewPosition(
+        currentX: Int,
+        currentY: Int,
+        screenWidth: Int,
+        screenHeight: Int,
+        viewWidth: Int,
+        viewHeight: Int,
+        speedMultiplier: Double
+    ): Pair<Int, Int> {
+
+        waveOffset += 0.1f
+        val newX = currentX + (sin(waveOffset) * 3).toInt()
+        val newY = currentY + (speed * speedMultiplier).toInt()
+
+        return Pair(newX.coerceIn(0, screenWidth - viewWidth), newY)
     }
 }

@@ -20,6 +20,8 @@ class SettingsFragment : Fragment() {
     private lateinit var tvGameSpeed: TextView
     private lateinit var sbMaxCockroaches: SeekBar
     private lateinit var tvMaxCockroaches: TextView
+    private lateinit var sbDifficulty: SeekBar
+    private lateinit var tvDifficulty: TextView
     private lateinit var sbBonusInterval: SeekBar
     private lateinit var tvBonusInterval: TextView
     private lateinit var sbRoundDuration: SeekBar
@@ -39,17 +41,19 @@ class SettingsFragment : Fragment() {
     }
 
     private fun initViews(view: View) {
-        // Инициализация элементов темы
+
         rgTheme = view.findViewById(R.id.rgTheme)
         rbThemeDefault = view.findViewById(R.id.rbThemeDefault)
         rbThemeOcean = view.findViewById(R.id.rbThemeOcean)
         rbThemeSunset = view.findViewById(R.id.rbThemeSunset)
 
-        // Инициализация остальных элементов
+
         sbGameSpeed = view.findViewById(R.id.sbGameSpeed)
         tvGameSpeed = view.findViewById(R.id.tvGameSpeed)
         sbMaxCockroaches = view.findViewById(R.id.sbMaxCockroaches)
         tvMaxCockroaches = view.findViewById(R.id.tvMaxCockroaches)
+        sbDifficulty = view.findViewById(R.id.sbDifficulty)
+        tvDifficulty = view.findViewById(R.id.tvDifficultyValue)
         sbBonusInterval = view.findViewById(R.id.sbBonusInterval)
         tvBonusInterval = view.findViewById(R.id.tvBonusInterval)
         sbRoundDuration = view.findViewById(R.id.sbRoundDuration)
@@ -58,7 +62,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // Слушатель для выбора темы
+
         rgTheme.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.rbThemeDefault -> applyTheme(R.style.Theme_MyApp)
@@ -67,11 +71,18 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        // Слушатели для SeekBar
         setupSeekBar(sbGameSpeed, tvGameSpeed, "x")
         setupSeekBar(sbMaxCockroaches, tvMaxCockroaches, "шт")
         setupSeekBar(sbBonusInterval, tvBonusInterval, "сек")
         setupSeekBar(sbRoundDuration, tvRoundDuration, "сек")
+        sbDifficulty.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val levels = listOf("Младенец", "Ребенок", "Пацан с района", "Милешко", "Солодов")
+                tvDifficulty.text = levels[progress]
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
 
         btnSaveSettings.setOnClickListener {
             saveSettings()
@@ -101,7 +112,7 @@ class SettingsFragment : Fragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-        // Инициализируем начальные значения
+
         seekBar.progress = seekBar.progress
     }
 
@@ -113,6 +124,7 @@ class SettingsFragment : Fragment() {
         editor.putInt("max_cockroaches", sbMaxCockroaches.progress)
         editor.putInt("bonus_interval", sbBonusInterval.progress)
         editor.putInt("round_duration", sbRoundDuration.progress)
+        editor.putInt("game_difficulty", sbDifficulty.progress)
 
         val theme = when {
             rbThemeDefault.isChecked -> "default"
