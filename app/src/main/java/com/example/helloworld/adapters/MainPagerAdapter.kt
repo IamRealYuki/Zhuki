@@ -7,7 +7,7 @@ import com.example.helloworld.fragments.*
 
 class MainPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = 5
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
@@ -15,6 +15,7 @@ class MainPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activ
             1 -> RulesFragment()
             2 -> AuthorsFragment()
             3 -> SettingsFragment()
+            4 -> GameFragment()
             else -> throw IllegalArgumentException("Invalid position: $position")
         }
     }
