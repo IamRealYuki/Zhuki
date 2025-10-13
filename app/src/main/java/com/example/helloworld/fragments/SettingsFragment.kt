@@ -106,20 +106,23 @@ class SettingsFragment : Fragment() {
     }
 
     private fun saveSettings() {
-        val settings = mapOf(
-            "game_speed" to sbGameSpeed.progress,
-            "max_cockroaches" to sbMaxCockroaches.progress,
-            "bonus_interval" to sbBonusInterval.progress,
-            "round_duration" to sbRoundDuration.progress,
-            "theme" to when {
-                rbThemeDefault.isChecked -> "default"
-                rbThemeOcean.isChecked -> "ocean"
-                rbThemeSunset.isChecked -> "sunset"
-                else -> "default"
-            }
-        )
+        val prefs = requireContext().getSharedPreferences("game_prefs", 0)
+        val editor = prefs.edit()
 
-        // Здесь можно сохранить настройки в SharedPreferences
+        editor.putInt("game_speed", sbGameSpeed.progress)
+        editor.putInt("max_cockroaches", sbMaxCockroaches.progress)
+        editor.putInt("bonus_interval", sbBonusInterval.progress)
+        editor.putInt("round_duration", sbRoundDuration.progress)
+
+        val theme = when {
+            rbThemeDefault.isChecked -> "default"
+            rbThemeOcean.isChecked -> "ocean"
+            rbThemeSunset.isChecked -> "sunset"
+            else -> "default"
+        }
+        editor.putString("theme", theme)
+
+        editor.apply()
         Toast.makeText(requireContext(), "Настройки сохранены!", Toast.LENGTH_SHORT).show()
     }
 }
