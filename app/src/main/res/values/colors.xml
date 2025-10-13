@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Ocean Theme -->
+    <color name="ocean_primary">#1E88E5</color>
+    <color name="ocean_background">#13F2FD</color>
+
+    <!-- Sunset Theme -->
+    <color name="sunset_primary">#FF5722</color>
+    <color name="sunset_background">#FFA310</color>
+
+    <!-- Forest Theme -->
+    <color name="forest_primary">#388E3C</color>
+    <color name="forest_background">#E8F5E8</color>
 </resources>
