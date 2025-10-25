@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.helloworld.adapters.MainPagerAdapter
@@ -53,14 +52,11 @@ class MainActivity : AppCompatActivity() {
 
         typedArray.recycle()
 
-        // Применяем цвета к TabLayout
         tabLayout.setBackgroundColor(backgroundColor)
         tabLayout.setSelectedTabIndicatorColor(indicatorColor)
 
-        // Цвета текста табов
         tabLayout.setTabTextColors(unselectedColor, selectedColor)
 
-        // Цвет иконок табов (если есть)
         tabLayout.setTabIconTint(
             ColorStateList(
                 arrayOf(
@@ -92,6 +88,7 @@ class MainActivity : AppCompatActivity() {
                 2 -> "Авторы"
                 3 -> "Настройки"
                 4 -> "Игра"
+                5 -> "Рекорды"
                 else -> null
             }
         }.attach()

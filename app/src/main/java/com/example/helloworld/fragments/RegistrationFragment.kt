@@ -138,6 +138,12 @@ class RegistrationFragment : Fragment() {
             return
         }
 
+        val prefs = requireContext().getSharedPreferences("game_prefs", 0)
+        val editor = prefs.edit()
+
+        editor.putString("username", etFullName.text.toString().trim())
+        editor.apply()
+
         tvResult.text = """
             ФИО: ${player.fullName}
             Пол: ${player.gender}

@@ -34,8 +34,4 @@ class Grasshopper (
 
         return Pair(newX.coerceIn(0, screenWidth - viewWidth), newY)
     }
-
-    init {
-        println("Создан жук по имени Солодов")
-    }
 }

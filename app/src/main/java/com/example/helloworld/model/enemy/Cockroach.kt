@@ -24,8 +24,4 @@ class Cockroach (
         val newY = currentY + (speed * speedMultiplier).toInt()
         return Pair(currentX, newY)
     }
-
-    init {
-        println("Создан жук по имени Солодов")
-    }
 }

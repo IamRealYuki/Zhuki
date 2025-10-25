@@ -34,8 +34,4 @@ class Luntik (
 
         return Pair(newX, newY)
     }
-
-    init {
-        println("Создан жук по имени Солодов")
-    }
 }

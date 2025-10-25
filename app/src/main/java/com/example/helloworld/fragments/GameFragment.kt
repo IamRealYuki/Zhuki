@@ -1,6 +1,7 @@
 package com.example.helloworld.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.os.Bundle
@@ -10,9 +11,13 @@ import android.os.Looper
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.helloworld.R
-import com.example.helloworld.model.*
+import com.example.helloworld.data.AppDatabase
+import com.example.helloworld.data.ScoreRecord
 import com.example.helloworld.model.enemy.*
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import kotlin.random.Random
 
 class GameFragment : Fragment() {
@@ -37,6 +42,7 @@ class GameFragment : Fragment() {
     private var maxBugs = 5
     private var bugSpeedMultiplier = 1.0
     private var roundDuration = 30000L
+
     private var difficulty = 1
     private var lastSpawnTime = System.currentTimeMillis()
 
@@ -119,6 +125,27 @@ class GameFragment : Fragment() {
         activeBugs.clear()
         btnStart.text = "Старт"
         Toast.makeText(requireContext(), "Игра окончена! Ваш счёт: $score", Toast.LENGTH_SHORT).show()
+        saveRecord()
+    }
+
+    private fun saveRecord() {
+        val playerName = getCurrentPlayerName()
+
+        val record = ScoreRecord(
+            playerName = playerName,
+            score = score,
+            difficultyLevel = difficulty
+        )
+
+        lifecycleScope.launch {
+            val database = AppDatabase.getDatabase(requireContext())
+            database.scoreRecordDao().insertRecord(record)
+        }
+    }
+
+    private fun getCurrentPlayerName(): String {
+        val prefs = requireContext().getSharedPreferences("game_prefs", 0)
+        return prefs.getString("username", "Аноним") ?: "Анонимчик"
     }
 
     private fun startTimer() {
