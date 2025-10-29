@@ -49,7 +49,9 @@ class RecordsFragment : Fragment() {
     private fun loadRecords() {
         lifecycleScope.launch {
             viewModel.top10Records.collect { records ->
-                adapter.submitList(records)
+                val newAdapter = RecordsAdapter()
+                recyclerView.adapter = newAdapter
+                newAdapter.submitList(records.toList())
             }
         }
     }

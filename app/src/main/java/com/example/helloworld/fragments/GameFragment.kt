@@ -139,7 +139,20 @@ class GameFragment : Fragment() {
 
         lifecycleScope.launch {
             val database = AppDatabase.getDatabase(requireContext())
-            database.scoreRecordDao().insertRecord(record)
+            val dao = database.scoreRecordDao()
+
+            val existingRecord = dao.getRecordByPlayer(playerName)
+
+            if (existingRecord != null) {
+                val updatedRecord = existingRecord.copy(
+                    playerName = record.playerName,
+                    score = record.score,
+                    difficultyLevel = record.difficultyLevel,
+                )
+                dao.updateRecord(updatedRecord)
+            } else {
+                dao.insertRecord(record)
+            }
         }
     }
 

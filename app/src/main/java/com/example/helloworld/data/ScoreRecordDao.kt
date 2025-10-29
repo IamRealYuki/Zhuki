@@ -15,6 +15,12 @@ interface ScoreRecordDao {
     @Insert
     suspend fun insertRecord(record: ScoreRecord)
 
+    @Update
+    suspend fun updateRecord(record: ScoreRecord)
+
+    @Query("SELECT * FROM score_records WHERE playerName = :playerName LIMIT 1")
+    suspend fun getRecordByPlayer(playerName: String): ScoreRecord?
+
     @Query("DELETE FROM score_records WHERE id = :id")
     suspend fun deleteRecord(id: Long)
 
