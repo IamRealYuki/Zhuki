@@ -39,6 +39,19 @@
             android:layout_weight="1" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tvBonus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="БОНУС! БОНУС! БОНУС!"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFD700"
+        android:background="#80000000"
+        android:padding="20dp"
+        android:visibility="gone"
+        android:layout_gravity="center" />
+
     <Button
         android:id="@+id/btnStart"
         android:layout_width="120dp"
