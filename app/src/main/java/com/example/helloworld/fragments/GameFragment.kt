@@ -444,5 +444,15 @@ class GameFragment : Fragment(), SensorEventListener {
             in 9 .. 11 -> Luntik() // 20%
             else -> Solodov()  // 20%
         }
+//            Как получить курс золота из кеша
+//        // В любом Activity/Fragment
+//        val prefs = getSharedPreferences("gold_widget", Context.MODE_PRIVATE)
+//        val goldRate = prefs.getString("current_rate", "₽ 0.0") ?: "₽ 0.0"
+//
+//// Преобразовать в число для расчетов
+//        val rateValue = goldRate.replace("₽", "").replace(" ", "").toDoubleOrNull() ?: 0.0
+//
+//// Начислить очки за таракана
+//        val cockroachPoints = (basePoints * rateValue).toInt()
     }
 }
