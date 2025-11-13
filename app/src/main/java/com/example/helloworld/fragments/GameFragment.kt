@@ -50,12 +50,14 @@ class GameFragment : Fragment(), SensorEventListener {
     private var bonusEndTime = 0L
 
     private var spawnInterval = 1200L
+    private var goldBugSpawnInterval = 20000L;
     private var maxBugs = 5
     private var bugSpeedMultiplier = 1.0
     private var roundDuration = 30000L
 
     private var difficulty = 1
     private var lastSpawnTime = System.currentTimeMillis()
+    private var lastGoldBugSpawnTime = System.currentTimeMillis();
     private var lastBonusSpawnTime = System.currentTimeMillis()
 
     private var timer: CountDownTimer? = null
@@ -254,6 +256,11 @@ class GameFragment : Fragment(), SensorEventListener {
                 lastBonusSpawnTime = System.currentTimeMillis()
             }
 
+            if (System.currentTimeMillis() - lastGoldBugSpawnTime >= goldBugSpawnInterval) {
+                lastGoldBugSpawnTime = System.currentTimeMillis()
+                spawnBug(true)
+            }
+
             if (isBonusActive && System.currentTimeMillis() > bonusEndTime) {
                 deactivateBonus()
             }
@@ -329,8 +336,17 @@ class GameFragment : Fragment(), SensorEventListener {
         }
     }
 
-    private fun spawnBug() {
-        val bug = getRandomBug()
+    private fun spawnBug(specialLuntik: Boolean = false) {
+        var bug = getRandomBug()
+        if (specialLuntik) {
+            val prefs = requireContext().getSharedPreferences("gold_widget", Context.MODE_PRIVATE)
+            val goldRate = prefs.getString("current_rate", "₽ 0.0") ?: "₽ 0.0"
+            val rateValue = goldRate.replace("₽", "")
+                .replace(" ", "")
+                .replace(",", ".")
+                .toDoubleOrNull() ?: 0.0
+            bug = Luntik("mint_linatik.png", rateValue.toInt())
+        }
         val imageView = ImageView(requireContext())
 
         try {
@@ -444,15 +460,5 @@ class GameFragment : Fragment(), SensorEventListener {
             in 9 .. 11 -> Luntik() // 20%
             else -> Solodov()  // 20%
         }
-//            Как получить курс золота из кеша
-//        // В любом Activity/Fragment
-//        val prefs = getSharedPreferences("gold_widget", Context.MODE_PRIVATE)
-//        val goldRate = prefs.getString("current_rate", "₽ 0.0") ?: "₽ 0.0"
-//
-//// Преобразовать в число для расчетов
-//        val rateValue = goldRate.replace("₽", "").replace(" ", "").toDoubleOrNull() ?: 0.0
-//
-//// Начислить очки за таракана
-//        val cockroachPoints = (basePoints * rateValue).toInt()
     }
 }

@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit
 import com.example.helloworld.*
 import androidx.core.content.edit
 import android.content.ComponentName
+import androidx.core.content.ContentProviderCompat.requireContext
 
 class GoldWidgetWorker(
     context: Context,
@@ -54,7 +55,8 @@ class GoldWidgetWorker(
 
             parseGoldRateFromXML(xmlResponse)
         } catch (e: Exception) {
-            return@withContext "Ошибка запроса"
+            val prefs = applicationContext.getSharedPreferences("gold_widget", 0)
+            return@withContext prefs.getString("current_rate", "₽ 0.0") ?: "₽ 0.0"
         }
     }
 
@@ -101,12 +103,12 @@ class GoldWidgetWorker(
     }
 
     private fun saveGoldRateToCache(rate: String) {
-        val prefs = applicationContext.getSharedPreferences("gold_widget", Context.MODE_PRIVATE)
+        val prefs = applicationContext.getSharedPreferences("gold_widget", 0)
         prefs.edit { putString("current_rate", rate) }
     }
 
     private fun getCachedGoldRate(): String? {
-        val prefs = applicationContext.getSharedPreferences("gold_widget", Context.MODE_PRIVATE)
+        val prefs = applicationContext.getSharedPreferences("gold_widget", 0)
         return prefs.getString("current_rate", null)
     }
 
