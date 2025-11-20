@@ -27,6 +27,19 @@ class MainActivity : AppCompatActivity() {
         initViews()
         setupViewPager()
         ThemeManager.setTheme(R.style.Theme_MyApp_Ocean, this)
+        restoreViewPagerState(savedInstanceState)
+    }
+
+    private fun restoreViewPagerState(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            val savedPosition = it.getInt("VIEWPAGER_POSITION", 0)
+            viewPager.setCurrentItem(savedPosition, false)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("VIEWPAGER_POSITION", viewPager.currentItem)
     }
 
     override fun onDestroy() {
@@ -81,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         val adapter = MainPagerAdapter(this)
         viewPager.adapter = adapter
 
+        viewPager.isUserInputEnabled = false
+
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
                 0 -> "Регистрация"
@@ -91,6 +106,15 @@ class MainActivity : AppCompatActivity() {
                 5 -> "Рекорды"
                 else -> null
             }
+
+            tab.view.setOnClickListener {
+                viewPager.setCurrentItem(position, true)
+//                viewPager.currentItem = position
+            }
         }.attach()
+
+        viewPager.post {
+            viewPager.setCurrentItem(0, false)
+        }
     }
 }

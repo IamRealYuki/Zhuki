@@ -22,12 +22,14 @@ import com.example.helloworld.R
 import com.example.helloworld.data.AppDatabase
 import com.example.helloworld.data.ScoreRecord
 import com.example.helloworld.model.enemy.*
+import com.example.helloworld.viewmodels.GameViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 
 class GameFragment : Fragment(), SensorEventListener {
+
+    private val gameViewModel: GameViewModel by viewModel()
 
     private lateinit var gameLayout: FrameLayout
     private lateinit var tvScore: TextView
@@ -84,7 +86,22 @@ class GameFragment : Fragment(), SensorEventListener {
         setupTouchListener()
         loadSettings()
         findViewPager()
+        observeGameState()
         return view
+    }
+
+    private fun observeGameState() {
+        lifecycleScope.launch {
+            gameViewModel.gameState.collect { state ->
+                tvScore.text = "Очки: ${state.score}"
+                tvMiss.text = "Промахи: ${state.miss}"
+
+                if (state.isPlaying != isPlaying) {
+                    isPlaying = state.isPlaying
+                    btnStart.text = if (isPlaying) "Стоп" else "Старт"
+                }
+            }
+        }
     }
 
     private fun findViewPager() {
@@ -126,8 +143,8 @@ class GameFragment : Fragment(), SensorEventListener {
     private fun setupTouchListener() {
         gameLayout.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN && isPlaying) {
-                miss++
-                tvMiss.text = "Промахи: $miss"
+                val currentMiss = gameViewModel.gameState.value.miss + 1
+                gameViewModel.updateMiss(currentMiss)
             }
             false
         }
@@ -150,21 +167,14 @@ class GameFragment : Fragment(), SensorEventListener {
     }
 
     private fun startGame() {
-        score = 0
-        miss = 0
-        tvScore.text = "Очки: 0"
-        tvMiss.text = "Промахи: 0"
+        gameViewModel.resetGame()
+        gameViewModel.updateGameState(isPlaying = true)
+
         tvTimer.text = "Время: --"
-        isPlaying = true
-        btnStart.text = "Стоп"
-
         setSwipeEnabled(false)
-
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME)
-
         handler.post(spawnRunnable)
         startTimer()
-
         lastBonusSpawnTime = System.currentTimeMillis()
     }
 
@@ -198,6 +208,7 @@ class GameFragment : Fragment(), SensorEventListener {
 
     private fun saveRecord() {
         val playerName = getCurrentPlayerName()
+        val score = gameViewModel.gameState.value.score
 
         val record = ScoreRecord(
             playerName = playerName,
@@ -366,8 +377,8 @@ class GameFragment : Fragment(), SensorEventListener {
         imageView.layoutParams = params
 
         imageView.setOnClickListener {
-            score += bug.points
-            tvScore.text = "Очки: $score"
+            val currentScore = gameViewModel.gameState.value.score + bug.points
+            gameViewModel.updateScore(currentScore)
             gameLayout.removeView(imageView)
             activeBugs.removeAll { it.first == imageView }
         }
